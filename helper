@@ -1,0 +1,11 @@
+package us.cyber.helpSession;
+
+public class helper {
+	
+	public String getSession() {
+		return "Session12121";
+	}
+	public int getSessionId() {
+		return 23132232;
+	}
+}
