@@ -1,0 +1,15 @@
+package us.cyber.logging;
+
+import java.util.logging.Logger;
+
+public class Logging {
+	static Logger log = Logger.getLogger(Logging.class.getName());
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		log.debug("Hello this is a debug message");
+		log.info("Hello this is an info message");
+	}
+
+}
