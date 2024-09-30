@@ -1,0 +1,29 @@
+package us.cyber.practice;
+
+import javax.crypto.Cipher;
+
+public class KeyPair {
+	public static void main(String[] args) throws Exception {
+		
+		String originalMessage = "originalMessage";
+		KeyPair keyPair = generateKeyPair();
+		
+	}
+	private static KeyPair generateKeyPair() throws Exception{
+		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+		keyPairGenerator.initialize(2048);
+		return keyPairGenerator.generateKeyPair();
+	}
+	private static byte[] encrypt(String message, PublicKey publicKey) throws Exception{
+		Cipher cipher = Cipher.getInstance("RSA");
+		cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+		return cipher.doFinal(message.getBytes());
+	}
+	private static String decrypt(byte[] encryptedBytes, PrivateKey privateKey) throws Exception{
+		Cipher cipher = Cipher.getInstance("RSA");
+		cipher.init(Cipher.DECRYPT_MODE, privateKey);
+		byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+		return new String(decryptedBytes);
+	}
+}
+
