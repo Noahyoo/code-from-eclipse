@@ -1,0 +1,99 @@
+package us.cyber.inputValidation;
+
+import java.util.regex.Pattern;
+
+public class InputValidationChallenge {
+	public static void main(String[] args) {
+		String username = "USER123";
+		username = username.trim();
+		String password = "PassWords1";
+		String email = "alkjsdhf@gmail.com";
+		String phoneNum = "123-456-7890";
+		String creditNum = "1234 5678 9101 2131";
+		String URL = "https://example.com/path";
+		String socialNum = "123-45-6789";
+		String postalCode = "12345-4567";
+		
+		System.out.println(isValidEmail(email));
+		System.out.println(isValidPassword(password));
+		System.out.println(isValidUsername(username));
+		System.out.println(isValidPhoneNum(phoneNum));
+		System.out.println(isValidCreditNum(creditNum));
+		System.out.println(isValidSocialNum(socialNum));
+		System.out.println(isValidPostalCode(postalCode));
+		
+		// validate user inputz
+		if(isValidUsername(username) && isValidPassword(password) && isValidEmail(email) && isValidPhoneNum(phoneNum) && isValidCreditNum(creditNum) && isValidURL(URL) && isValidSocialNum(socialNum) && isValidPostalCode(postalCode)) {
+			//process the validated input
+			System.out.println("Valid input received: ");
+			System.out.println("Username: " + username);
+			System.out.println("Password: " + password);
+			System.out.println("Email: " + email);
+			System.out.println("Phone Number: " + phoneNum);
+			System.out.println("Credit Number: " + creditNum);
+			System.out.println("URL: " + URL);
+			System.out.println("Social Num: " + socialNum);
+			System.out.println("Postal code: " +postalCode);
+			
+		}
+		else {
+			System.out.println("Invalid input detected. Please check your input.");
+		}
+
+	}
+	//validate email
+	private static boolean isValidEmail(String email) {
+		//email should not contain script tags
+		return !email.contains("<script>") && !email.contains("</script>") && email.contains("@") && email.contains(".com");
+	}
+	//validate password
+	private static boolean isValidPassword(String password) {
+	    if (!password.contains("'") && !password.contains(";") && !password.contains("--")) {
+	        if (password.length() >= 8){
+	            boolean hasUpperCase = false;
+	            boolean hasLowerCase = false;
+	            boolean hasDigit = false;
+
+	            for (char c : password.toCharArray()) {
+	                if (Character.isUpperCase(c)) {
+	                    hasUpperCase = true;
+	                } 
+	                else if (Character.isLowerCase(c)) {
+	                    hasLowerCase = true;
+	                } 
+	                else if (Character.isDigit(c)) {
+	                    hasDigit = true;
+	                }
+
+	                // Break the loop if all conditions are met
+	                if (hasUpperCase && hasLowerCase && hasDigit) {
+	                    return true;
+	                }
+	            }
+	        }
+	    }
+	    return false;
+	}
+	//validate email
+	private static boolean isValidUsername(String username) {
+		// Username should contain only alphanumeric characters
+		return Pattern.matches("[A-Z0-9]+", username);
+	}
+	private static boolean isValidPhoneNum(String phoneNum) {
+		return phoneNum.length() == 10 || (phoneNum.length() == 12 && (phoneNum.matches("\\d{3}[-\\s]?\\d{3}[-\\s]?\\d{4}") || phoneNum.contains(" ")));
+	}
+	private static boolean isValidCreditNum(String creditNum) {
+		return creditNum.length() == 16 || (creditNum.length() == 19 && creditNum.contains(" "));
+	}
+	private static boolean isValidURL(String URL) {
+		return URL.contains("http://") || URL.contains("https://");
+	}
+	private static boolean isValidSocialNum(String socialNum) {
+		return socialNum.length() == 11 && socialNum.matches("\\d{3}[-\\s]?\\d{2}[-\\s]?\\d{4}");
+	}
+	private static boolean isValidPostalCode(String postalCode) {
+		return postalCode.replaceAll("[\\s-]", "");
+		
+		
+	}
+}
