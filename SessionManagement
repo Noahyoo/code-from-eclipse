@@ -1,0 +1,68 @@
+package us.cyber.session;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+public class SessionManagement {
+	
+	private static Map<String, String> sessions = new HashMap<>();
+	
+	public static void main(String[] args) {
+		
+		//Variables of user name, password and calls generateSessionId method
+		String username = "user123";
+		String password = "password123";
+		String sessionId = generateSessionId();
+		
+		//checks if user name and password matches
+		if(authenticatedUser(username, password)) {
+			//creates a session
+			createSession(username, sessionId);
+			
+			//makes variable securedResource equal to the method checking if the sessionId is in sessions
+			String securedResource = getSecuredResource(sessionId);
+			System.out.println(securedResource);
+			System.out.println("Session before invalidation: " + sessions);
+			//invalidates the sessionId by calling the invalidateSession method which removes the sessionId from the session
+			invalidateSession(sessionId);
+			System.out.println("Session after invalidation: "+sessions);
+			//makes variable securedResourceAfterInvalidation equal to the getSecuredResource with the sessionID after it was invalidated
+			String securedResourceAfterInvalidation = getSecuredResource(sessionId);
+			System.out.println(securedResourceAfterInvalidation);
+		}
+		else {
+			//if authenticatedUser is false then this would print out
+			System.out.println("Login failed. Please check your credentials.");
+		}
+		
+	}
+	private static String generateSessionId() {
+		//generates sessoin Id
+		return UUID.randomUUID().toString();
+	}
+	private static boolean authenticatedUser(String username, String password) {
+		//if the username is user123 and the password is password123, return
+		return username.equals("user123") && password.equals("password123");
+	}
+	private static void createSession(String username, String sessionId) {
+		//puts the sessionId and username into the session
+		sessions.put(sessionId,  username);
+	}
+	private static String getSecuredResource(String sessionId) {
+		//if session contains sessionId, it returns this
+		if(sessions.containsKey(sessionId)) {
+			//gets user name from sessionId
+			String username = sessions.get(sessionId);
+			return "Welcome, " + username + "! You have access to the secured resource.";
+		}
+		//if session does not contain sessionId, it returns this
+		else {
+			return "Access denied. Please log in to access the secured resource.";
+		}
+	}
+	//removes sessionId from session.
+	private static void invalidateSession(String sessionId) {
+		sessions.remove(sessionId);
+	}
+}
