@@ -1,0 +1,218 @@
+package us.cyber.session;
+
+
+import java.util.*;
+
+public class BankingSystem {
+
+    private static Map<String, String> sessions = new HashMap<>();
+    private static Map<String, Account> accounts = new HashMap<>();
+
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        boolean running = true;
+        //will always run
+        while (running) {
+            System.out.println("Welcome to the Banking System!");
+            //calls the display function which gives choices to chose
+            int option = display();
+
+            if (option == 1) {
+            	//inputing 1 would let you sign up for the bank
+                signUp();
+            } else if (option == 2) {
+            	//inputting 2 would let you login to your account and access bank operations
+                login();
+            } else if (option == 3) {
+            	//exits
+                System.out.println("Exiting...");
+                running = false;
+            } else {
+            	//if it is not 1, 2, or 3 then it would output
+                System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+
+    public static String generateSessionId() {
+    	//generates random sessionId
+        return UUID.randomUUID().toString();
+    }
+
+    public static void createSession(String username, String sessionId) {
+    	//assigning the sessionId to the user name
+        sessions.put(sessionId, username);
+    }
+
+    public static boolean authenticatedUser(String username, String password) {
+    	//if the account contains the username and the username's password equals to the password it would authenticate the user
+        return accounts.containsKey(username) && accounts.get(username).getPassword().equals(password);
+    }
+
+
+    private static void invalidateSession(String sessionId) {
+    	//logs out
+        sessions.remove(sessionId);
+    }
+
+    private static int display() {
+    	//when display function is called it would run this
+        Scanner scan = new Scanner(System.in);
+        System.out.println("1. Sign Up");
+        System.out.println("2. Login");
+        System.out.println("3. Exit");
+        System.out.println("Choose an option: ");
+        return scan.nextInt();
+    }
+
+    private static void login() {
+    	//when login function is called it would run this 
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Enter your username: ");
+        String username = scan.next();
+        System.out.println("Enter your password: ");
+        String password = scan.next();
+
+        if (authenticatedUser(username, password)) {
+            String sessionId = generateSessionId();
+            createSession(username, sessionId);
+            System.out.println("Login successful.");
+            System.out.println("Session ID: " + sessionId);
+            //gives access to bank operations
+            bankOps(sessionId);
+            //logs out
+            invalidateSession(sessionId);
+            System.out.println("Logged out.");
+        } else {
+            System.out.println("Login failed. Please check your credentials.");
+        }
+    }
+
+    public static void signUp() {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Enter your username: ");
+        String username = scan.next();
+        System.out.println("Enter your password: ");
+        String password = scan.next();
+        //if accounts has a username with the same name, you cannot sign up
+        if (accounts.containsKey(username)) {
+            System.out.println("Username already exists. Please choose a different username.");
+        } else {
+        	//it puts the account into the accounts hashmap
+            accounts.put(username, new Account(username, password, 0));
+            System.out.println("Account created successfully. You can now login.");
+        }
+    }
+
+    private static void bankOps(String sessionId) {
+        Scanner scan = new Scanner(System.in);
+        boolean loggedIn = true;
+
+        while (loggedIn) {
+        	//options
+            System.out.println("Choose an operation:");
+            System.out.println("1. Check Balance");
+            System.out.println("2. Add Amount");
+            System.out.println("3. Withdraw Amount");
+            System.out.println("4. Logout");
+            int option = scan.nextInt();
+
+            if (option == 1) {
+            	//if 1 is chosen then checkBal of the sessionId is called, must be from a session
+                checkBal(sessionId);
+            } else if (option == 2) {
+            	//add amount of sessionId is called
+                addAmount(sessionId);
+            } else if (option == 3) {
+            	//withAmt of sessionId is called, from that specific session
+                withAmt(sessionId);
+            } else if (option == 4) {
+            	//logs out so the while loop ends
+                loggedIn = false;
+            } else {
+                System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+
+    private static void checkBal(String sessionId) {
+    	//if session contains sessionId, this woudl run
+        if (sessions.containsKey(sessionId)) {
+        	//helps get the user name from the session by the sessionId
+            String username = sessions.get(sessionId);
+            //retrieves the balance connected with the user name from the MAP accounts, if not found it would output $0
+            double balance = accounts.getOrDefault(username, new Account("", "", 0)).getBalance();
+            System.out.println("Your balance is: $" + balance);
+        } else {
+            System.out.println("Access denied. Please log in first.");
+        }
+    }
+
+    private static void addAmount(String sessionId) {
+    	//if sessoins contains sessoinId then it would run the code 
+        if (sessions.containsKey(sessionId)) {
+            Scanner scan = new Scanner(System.in);
+            System.out.println("Enter the amount to deposit: ");
+            double amount = scan.nextDouble();
+            String username = sessions.get(sessionId);
+            //makes balance variable so it can add the amount
+            double balance = accounts.getOrDefault(username, new Account("", "", 0)).getBalance();
+            balance += amount;
+            accounts.get(username).setBalance(balance);
+            System.out.println("Amount deposited successfully.");
+        } else {
+            System.out.println("Access denied. Please log in first.");
+        }
+    }
+
+    private static void withAmt(String sessionId) {
+        if (sessions.containsKey(sessionId)) {
+            Scanner scan = new Scanner(System.in);
+            System.out.println("Enter the amount to withdraw: ");
+            double amount = scan.nextDouble();
+            String username = sessions.get(sessionId);
+            //makes balance variable to withdraw amount
+            double balance = accounts.getOrDefault(username, new Account("", "", 0)).getBalance();
+            //checks if you have enough money to withdraw
+            if (balance >= amount) {
+                balance -= amount;
+                accounts.get(username).setBalance(balance);
+                System.out.println("Amount withdrawn successfully.");
+            } else {
+                System.out.println("Insufficient balance.");
+            }
+        } else {
+            System.out.println("Access denied. Please log in first.");
+        }
+    }
+
+    static class Account {
+        private String username; // stores username
+        private String password; // stores password
+        private double balance; // stores balance
+
+        public Account(String username, String password, double balance) { // constructor, always gets called, only works in the same class
+        	//refers to the username, password, and balance in the account class
+            this.username = username;
+            this.password = password;
+            this.balance = balance;
+        }
+
+        public String getUsername() { //if this function is called it would return username
+            return username;
+        }
+
+        public String getPassword() { //if this function is called it would return password
+            return password;
+        }
+
+        public double getBalance() { //if this function is called it would return balance
+            return balance;
+        }
+
+        public void setBalance(double balance) {
+        	//refers to setBalance class
+            this.balance = balance;
+        }
+    }
+}
