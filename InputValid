@@ -1,0 +1,51 @@
+package us.cyber.inputValidation;
+
+import java.util.regex.Pattern;
+
+public class InputValid {
+
+	public static void main(String[] args) {
+		//String username = "user123";
+		//String password = "password123'; DROP TABLE users; --";
+		//String email = "<script>alert('XSS Attack!'); </script>";
+		
+		String username = "user123";
+		username = username.trim();
+		String password = "password123";
+		String email = "alkjsdhf@gmail.com";
+		
+		System.out.println(isValidEmail(email));
+		System.out.println(isValidPassword(password));
+		System.out.println(isValidUsername(username));
+		
+		// validate user input
+		if(isValidUsername(username) && isValidPassword(password) && isValidEmail(email)) {
+			//process the validated input
+			System.out.println("Valid input received: ");
+			System.out.println("Username: " + username);
+			System.out.println("Password: " + password);
+			System.out.println("Email: " + email);
+			
+		}
+		else {
+			System.out.println("Invalid input detected. Please check your input.");
+		}
+
+	}
+	//validate email
+	private static boolean isValidEmail(String email) {
+		//emai should not contain script tags
+		return !email.contains("<script>") && !email.contains("</script>");
+	}
+	//validate password
+	private static boolean isValidPassword(String password) {
+		//password should not contain special characters
+		return !password.contains("'") && !password.contains(";") && !password.contains("--");
+	}
+	//validate email
+	private static boolean isValidUsername(String username) {
+		// Username should contain only alphanumeric characters
+		return Pattern.matches("[a-zA-Z0-9]+", username);
+	}
+
+}
