@@ -1,25 +1,45 @@
-package us.cyber.captcha;
+package us.cyber.controller;
 
-import java.util.Random;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
-public class CaptchaGenerator {
-	public static void main(String[] args) {
-		String captchaString = generateCaptchaString();
-		System.out.println(captchaString);
+import javax.crypto.Cipher;
 
+public class Swing {
+
+	public static void main(String[] args) throws Exception {
+		String originalMessage = "NoahHelloWorldHelloIAMHELLOHIHOLABONJOUR";
+		int lenOfMessage = originalMessage.length();
+		originalMessage = originalMessage+lenOfMessage;
+		
+		KeyPair keyPair = generateKeyPair();
+		
+		
+		byte[] encryptedBytes = encrypt(originalMessage, keyPair.getPublic());
+		String decryptedMessage = decrypt(encryptedBytes, keyPair.getPrivate());
+		
+		System.out.println("Name: " + originalMessage);
+		System.out.println("Encrypted name: " + new String(encryptedBytes));
+		System.out.println("Decrypted name(original message): " + decryptedMessage);
 	}
-	private static String generateCaptchaString() {
-		int length = 6;
-		StringBuilder captchaString = new StringBuilder();
-		Random random = new Random();
-		for(int i = 0; i < length; i++) {
-			int asciiValue = random.nextInt(75)+48;
-			if(asciiValue >= 58 && asciiValue <= 64 || (asciiValue >= 91 && asciiValue <= 96)) {
-				i--;
-				continue;
-			}
-			captchaString.append((char) asciiValue);
-		}
-		return captchaString.toString();
+
+	private static KeyPair generateKeyPair() throws Exception{
+		KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+		keyPairGenerator.initialize(2048);
+		return keyPairGenerator.generateKeyPair();
 	}
+	private static byte[] encrypt(String message, PublicKey publicKey) throws Exception{
+		Cipher cipher = Cipher.getInstance("RSA");
+		cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+		return cipher.doFinal(message.getBytes());
+	}
+	private static String decrypt(byte[] encryptedBytes, PrivateKey privateKey) throws Exception{
+		Cipher cipher = Cipher.getInstance("RSA");
+		cipher.init(Cipher.DECRYPT_MODE, privateKey);
+		byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+		return new String(decryptedBytes);
+	}
+	
 }
