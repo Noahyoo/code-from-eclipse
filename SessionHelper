@@ -1,0 +1,17 @@
+package us.cyber.session;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import us.cyber.helpSession.helper;
+
+public class SessionHelper {
+	public static void main(String[] args) {
+		helper help = new helper();
+		String session = help.getSession();
+		int sessionId = help.getSessionId();
+		
+		System.out.println("Your session is " + session + " you session id is " + sessionId);
+	}
+}
