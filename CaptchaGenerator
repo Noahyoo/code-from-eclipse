@@ -1,0 +1,25 @@
+package us.cyber.captcha;
+
+import java.util.Random;
+
+public class CaptchaGenerator {
+	public static void main(String[] args) {
+		String captchaString = generateCaptchaString();
+		System.out.println(captchaString);
+
+	}
+	private static String generateCaptchaString() {
+		int length = 6;
+		StringBuilder captchaString = new StringBuilder();
+		Random random = new Random();
+		for(int i = 0; i < length; i++) {
+			int asciiValue = random.nextInt(75)+48;
+			if(asciiValue >= 58 && asciiValue <= 64 || (asciiValue >= 91 && asciiValue <= 96)) {
+				i--;
+				continue;
+			}
+			captchaString.append((char) asciiValue);
+		}
+		return captchaString.toString();
+	}
+}
