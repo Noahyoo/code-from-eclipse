@@ -1,0 +1,23 @@
+package us.cyber.controller;
+
+import us.cyber.helper.Helper;
+
+public class CyberSecurityController {
+
+	public static void main(String[] args) {
+		String name = "Noah";
+		System.out.println("Welcom " + name + " to Cyber Security class!");
+		
+		Helper help = new Helper();
+		String content="My first project";
+		String message = help.generateMessage(content);
+		System.out.println(message);
+		
+		int number = 674323;
+		int code = help.generateCode(number);
+		System.out.println(code);
+		
+		
+		
+	}
+}
