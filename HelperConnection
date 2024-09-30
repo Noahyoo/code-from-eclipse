@@ -1,0 +1,16 @@
+package us.cyber.helpSession;
+
+import us.cyber.helpSession.*;
+
+public class HelperConnection {
+
+	public static void main(String[] args) {
+		helper help = new helper();
+		String session = help.getSession();
+		int sessionId = help.getSessionId();
+		
+		System.out.println("Your session is " + session + " you session id is " + sessionId);
+
+	}
+
+}
